@@ -22,7 +22,7 @@ This extension is available freely based on GNU Affero GPL 3.0. You can see furt
 
 		git clone https://github.com/utolee90/NamuMark-No-External-.git NamuMark
 
-1. [여기](https://github.com/utolee90/Namumark-No-External-/archive/master.zip)를 눌러 다운받은 다음 압축을 풀고, 압축이 풀린 파일을 모두 NamuMark 폴더에 넣습니다. (git으로 한 경우 필요 없습니다.)
+1. [여기](https://github.com/utolee90/NamuMark-No-External-/NamuMark-No-External--Master.zip)를 눌러 다운받은 다음 압축을 풀고, 압축이 풀린 파일을 모두 NamuMark 폴더에 넣습니다. (git으로 한 경우 필요 없습니다.)
 1. LocalSettings.php에 다음을 입력합니다.
 
      ```php
