@@ -4,7 +4,8 @@ NamuMark-No-External-은 [나무위키](https://namu.wiki)에서 사용하는 [�
 [php-namumark 라이브러리](https://github.com/koreapyj/php-namumark)를 바탕으로 구성되어 있습니다.
 
 ## For English Users
-Namumark-No-External- is a modification of "Namumark for Mediawiki" mady by Kim-Dong-Dong.
+Namumark-No-External- is a modification of "Namumark for Mediawiki" mady by Kim-Dong-Dong. This is based on 
+[php-namumark library by koreapyj](https://github.com/koreapyj/php-namumark).
 
 ## 라이선스 (Licenses)
 본 확장기능은 GNU Affero GPL 3.0에 따라 자유롭게 사용하실 수 있습니다. 라이선스에 대한 자세한 사항은 첨부 문서를 참고하십시오.
@@ -24,25 +25,25 @@ This extension is available freely based on GNU Affero GPL 3.0. You can see furt
 1. [여기](https://github.com/utolee90/Namumark-No-External-/archive/master.zip)를 눌러 다운받은 다음 압축을 풀고, 압축이 풀린 파일을 모두 NamuMark 폴더에 넣습니다. (git으로 한 경우 필요 없습니다.)
 1. LocalSettings.php에 다음을 입력합니다.
 
-    ```php
-    require_once "$IP/extensions/NamuMark/namumark.php";
-    $wgRawHtml = true;
-    $wgAllowImageTag = true;
-    ```
+     ```php
+     require_once "$IP/extensions/NamuMark/namumark.php";
+     $wgRawHtml = true;
+     $wgAllowImageTag = true;
+     ```
 
 # How To Use for English Users
 1. Firstly, make a new directory named "Namumark" in extension folder of Mediawiki, or input the command like below statement in extension folder of Mediawiki if you are able to use git on your server: 
 
-   git clone https://github.com/utolee90/NamuMark-No-External-.git NamuMark
+       git clone https://github.com/utolee90/NamuMark-No-External-.git NamuMark
    
 1. Click on [here](https://github.com/utolee90/Namumark-No-External-/archive/master.zip) to download the source and unzip it, and upload all the files in Namumark folder.
 
 1. Input this code in LocalSettings.php:
-   ```php
-    require_once "$IP/extensions/NamuMark/namumark.php";
-    $wgRawHtml = true;
-    $wgAllowImageTag = true;
-    ```
+     ```php
+     require_once "$IP/extensions/NamuMark/namumark.php";
+     $wgRawHtml = true;
+     $wgAllowImageTag = true;
+     ```
 
 ## 그 외
 이 코드는 나무마크의 기능 중에서 보안상의 문제를 야기할 수 있는 외부 이미지 혹은 동영상을 불러들일 수 있는 기능을 제거하였습니다. 원본에서 추가한 기능은 없으니 제거할 이유가 없다면 [원본](https://github.com/Oriwiki/php-namumark-mediawiki/)을 참조하세요.
