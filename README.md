@@ -1,7 +1,10 @@
+
 # php-namumark-mediawiki (No External)
 php-namumark-mediawiki (No External)는 [나무위키](https://namu.wiki)에서 사용하는 [나무마크](https://namu.wiki/w/%EB%82%98%EB%AC%B4%EC%9C%84%ED%82%A4:%ED%8E%B8%EC%A7%91%20%EB%8F%84%EC%9B%80%EB%A7%90)를 미디어위키 확장기능으로 구현한 것에서 외부 이미지/동영상을 이용하는 코드를 삭제한 것입니다. 오리위키 운영자 김동동이 만든 원본은 [이곳](https://github.com/Oriwiki/php-namumark-mediawiki/archive/master.zip)을 참조하세요.
 
 [php-namumark 라이브러리](https://github.com/koreapyj/php-namumark)를 바탕으로 구성되어 있습니다.
+
+수정 - 밑줄 매직워드 추가, 각주 문법 추가(소괄호 2), 글자 확대 효과 추가 (9단계), 중괄호 3개로 nowiki효과 제거, $$표시로 수식 삽입 가능, {{{#!html 문법 비활성화.
 
 ## 라이선스
 본 확장기능은 GNU Affero GPL 3.0에 따라 자유롭게 사용하실 수 있습니다. 라이선스에 대한 자세한 사항은 첨부 문서를 참고하십시오.
@@ -10,6 +13,7 @@ php-namumark-mediawiki (No External)는 [나무위키](https://namu.wiki)에서 
 * [Cite 확장기능](https://www.mediawiki.org/wiki/Extension:Cite)
 * [Math 확장기능](https://www.mediawiki.org/wiki/Extension:Math) 또는 [SimpleMathJax 확장기능](https://www.mediawiki.org/wiki/Extension:SimpleMathJax)
 * [Poem 확장기능](https://www.mediawiki.org/wiki/Extension:Poem)
+* [SyntaxHighlight 확장기능](https://www.mediawiki.org/wiki/Extension:SyntaxHighlight)
 
 ## 사용 방법
 1. 미디어위키 extensions 폴더에 NamuMark 폴더를 새로 생성합니다. 또는 서버에 직접 git을 이용하실 수 있으면 설치된 미디어위키의 extensions 폴더에서 다음과 같이 명령합니다.
