@@ -85,10 +85,10 @@ class NamuMark2 extends NamuMark {
 
     protected function renderProcessor($text, $type) {
         if($type == '{{|') {
-            if(preg_match('/\|-/', $text))
+            /*if(preg_match('/\|-/', $text))*/
                 return $type.$text.$type;
-            else
-                return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;">'.$text.'</poem>';
+            /* else
+                return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;">'.$text.'</poem>'; */
         } else {
             $lines = explode("\n", $text);
             $text = '';
@@ -107,15 +107,15 @@ class NamuMark2 extends NamuMark {
                 }
             }
 
-            if (self::startsWithi($text, '#!html')) {
+            if (self::startsWithi($text, '#!html')) { 
                 $text = substr($text, 7);
                 $text = htmlspecialchars_decode($text);
                 require_once("XSSfilter.php");
-                $xss = new XssHtml($text);
-                return $xss->getHtml();
+                $xss = new XssHtml($text); 
+                return  /* $xss->getHtml(); */  $type.$text.$type;
             } elseif(self::startsWithi($text, '#!syntax') && preg_match('/#!syntax ([^\s]*)/', $text, $match)) {
                 return '<syntaxhighlight lang="' . $match[1] . '" line="1">' . preg_replace('/#!syntax ([^\s]*)/', '', $text) . '</syntaxhighlight>';
-            } elseif(preg_match('/^\+([1-5])(.*)$/sm', $text, $size)) {
+            } elseif(preg_match('/^\+([1-9])(.*)$/sm', $text, $size)) {
                 for ($i=1; $i<=$size[1]; $i++){
                     if(isset($big_before) && isset($big_after)) {
                         $big_before .= '<big>';

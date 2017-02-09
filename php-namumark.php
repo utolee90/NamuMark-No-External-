@@ -30,6 +30,9 @@ class NamuMark {
             array('I.', 'ol style="list-style-type:upper-roman"'),
             array('i.', 'ol style="list-style-type:lower-roman"')
         );
+		
+		$this->mw_magic_words= array(
+		     'TOC', 'NOTOC', 'FORCETOC', 'NOEDITSECTION', 'NEWSECTIONLINK', 'NONEWSECTIONLINK', 'NOGALLARY', 'HIDDENCAT', 'NOCONTENTCONVERT', 'NOCC', 'NOTITLECONVERT', 'NOTC', 'INDEX', 'NOINDEX', 'STATICREDIRECT' );
 
         $this->multi_bracket = array(
             array(
@@ -66,11 +69,11 @@ class NamuMark {
                 'close' => ']]',
                 'multiline' => false,
                 'processor' => array($this,'linkProcessor')),
-            array(
+            /* array( # &#44060;&#51312;&#54032;&#50640;&#49436;&#45716; &#49324;&#50857;&#54616;&#51648; &#50506;&#51020;
                 'open'	=> '{{|',
                 'close' => '|}}',
                 'multiline' => false,
-                'processor' => array($this,'textProcessor')),
+                'processor' => array($this,'textProcessor')), */
             array(
                 'open'	=> '{{',
                 'close' => '}}',
@@ -106,11 +109,16 @@ class NamuMark {
                 'close' => ',,',
                 'multiline' => false,
                 'processor' => array($this,'textProcessor')),
-            array(
+/*          array(
                 'open'	=> '$ ',
                 'close' => ' $',
                 'multiline' => false,
-                'processor' => array($this,'textProcessor')),
+                'processor' => array($this,'textProcessor')), */
+			array(
+                'open'	=> '$$',
+                'close' => '$$',
+                'multiline' => false,
+                'processor' => array($this,'textProcessor')),	
             array(
                 'open'	=> '<!--',
                 'close' => '-->',
@@ -119,6 +127,11 @@ class NamuMark {
             array(
                 'open'	=> '<nowiki>',
                 'close' => '</nowiki>',
+                'multiline' => false,
+                'processor' => array($this,'textProcessor')),
+			array( # &#44033;&#51452; &#47928;&#48277; &#52628;&#44032;
+                'open'	=> '((',
+                'close' => '))',
                 'multiline' => false,
                 'processor' => array($this,'textProcessor')),
         );
@@ -140,7 +153,7 @@ class NamuMark {
         return $this->whtml;
     }
 
-    protected function htmlScan($text) {
+    protected function htmlScan($text) { #&#47784;&#45768;&#50948;&#53412;&#49885; &#50808;&#48512; &#47553;&#53356; &#47928;&#48277; [[http://|&#47553;&#53356;]]
         $result = '';
         $len = strlen($text);
         $line = '';
@@ -199,7 +212,7 @@ class NamuMark {
         return $result;
     }
 
-    protected function bqParser($text, &$offset) {
+    protected function bqParser($text, &$offset) { # &#54620;&#51460; &#46916;&#50864;&#51648; &#50506;&#44592;
         $len = strlen($text);
         $innerhtml = '';
         for($i=$offset;$i<$len;$i=self::seekEndOfLine($text, $i)+1) {
@@ -275,10 +288,10 @@ class NamuMark {
                 return '['.$ex_link[0].']';
         }
         $text = preg_replace('/(https?.*?(\.jpeg|\.jpg|\.png|\.gif))/', '<img src="$1">', $text);
-/*      if(preg_match('/(.*)\|(\[\[파일:.*)\]\]/', $text, $filelink))
+/*      if(preg_match('/(.*)\|(\[\[&#54028;&#51068;:.*)\]\]/', $text, $filelink))
             return $filelink[2].'|link='.str_replace(' ', '_',$filelink[1]).']]'; 
 */
-        if(preg_match('/^(파일:.*?(?!\.jpeg|\.jpg|\.png|\.gif))\|(.*)/i', $text, $namu_image)) {
+        if(preg_match('/^(&#54028;&#51068;:.*?(?!\.jpeg|\.jpg|\.png|\.gif))\|(.*)/i', $text, $namu_image)) {
             $properties = explode("&", $namu_image[2]);
 
             foreach($properties as $n => $each_property) {
@@ -329,21 +342,21 @@ class NamuMark {
             case 'date':
             case 'datetime':
                 return date('Y-m-d H:i:s');
-            case '목차':
+            case '&#47785;&#52264;':
             case 'tableofcontents':
                 return '__TOC__';
-            case '각주':
+            case '&#44033;&#51452;':
             case 'footnote':
-                return '<references />';
+                return '<references />';  
             default:
-                if(self::startsWithi($text, 'include') && preg_match('/^include\((.+)\)$/i', $text, $include)) {
+                if(self::startsWithi($text, 'include') && preg_match('/^include\((.+)\)$/i', $text, $include)) { #[include &#53952; &#47928;&#48277; 
                     $include[1] = str_replace(',', '|', $include[1]);
                     $include[1] = urldecode($include[1]);
                     return '{{'.$include[1].'}}'."\n";
                 }
-                if(self::startsWithi($text, 'anchor') && preg_match('/^anchor\((.+)\)$/i', $text, $anchor))
+                if(self::startsWithi($text, 'anchor') && preg_match('/^anchor\((.+)\)$/i', $text, $anchor)) #[anchor &#53952; &#47928;&#48277;
                     return '<div id="'.$anchor[1].'"></div>';
-                if(self::startsWith($text, '*') && preg_match('/^\*([^ ]*)([ ].+)?$/', $text, $note)) {
+                if(self::startsWith($text, '*') && preg_match('/^\*([^ ]*)([ ].+)?$/', $text, $note)) { #&#47784;&#45768;&#50948;&#53412;&#49885; &#44033;&#51452; &#54364;&#54788;
                     if(isset($note[1]) && isset($note[2]) && $note[1] !== '') {
                         foreach($this->refnames as $refname) {
                             if($refname === $note[1])
@@ -449,7 +462,7 @@ class NamuMark {
 			if(self::startsWith($text, $bracket['open'], $i) && !($bracket['open']==$bracket['close'] && $cnt>0)) {
 				$cnt++;
 				$done = true;
-				$i+=$openlen-1; // �ݺ��� �� ������ ���̹Ƿ�
+				$i+=$openlen-1; // &#65533;&#1914;&#65533;&#65533;&#65533; &#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#825;&#503;&#65533;
 			}elseif(self::startsWith($text, $bracket['close'], $i)) {
 				$cnt--;
 				$i+=$closelen-1;
@@ -538,7 +551,7 @@ class NamuMark {
 		return ($r=strpos($text, "\n", $offset))===false?strlen($text):$r;
 	}
 	
-	protected function tableParser($text, &$offset) {
+	protected function tableParser($text, &$offset) { #&#54364; &#47928;&#48277; 
 		$len = strlen($text);
 
 		$tableInnerStr = '';
@@ -741,19 +754,19 @@ class NamuMark {
 	}
 
     protected function textProcessor($otext, $type) {
-        if($type != '{{{' && $type != '<nowiki>')
+        if(/*$type != '{{{' && */$type != '<nowiki>') #&#47928;&#48277; &#47924;&#49884; &#54952;&#44284;&#47196; {{{}}}&#45716; &#49324;&#50857;&#54616;&#51648; &#50506;&#51020;.
             $text = $this->formatParser($otext);
         else
             $text = $otext;
         switch($type) {
-            case '--':
+            case '--': #&#52712;&#49548;&#49440; &#47928;&#48277;
             case '~~':
-                if(!self::startsWith($text, 'item-') && !self::endsWith($text, 'UNIQ') && !self::startsWith($text, 'QINU') && !preg_match('/^.*?-.*-QINU/', $text) && !self::startsWith($text, 'h-'))
-                    return '<s>'.$text.'</s>';
+                if(!self::startsWith($text, ' ') && !self::startsWith($text, 'item-') && !self::endsWith($text, 'UNIQ') && !self::startsWith($text, 'QINU') && !preg_match('/^.*?-.*-QINU/', $text) && !self::startsWith($text, 'h-'))
+                    return '<s>'.$text.'</s>'; #&#44277;&#48177;&#51060; &#51077;&#47141;&#46104;&#47732; &#52712;&#49548;&#49440; &#47928;&#48277; &#48708;&#54876;&#49457;&#54868;
                 else
                     return $type.$text.$type;
             case '__':
-                if(preg_match('/TOC/', $text) || preg_match('/^.*?(\.jpeg|\.jpg|\.png|\.gif)/', $text))
+                if(preg_match('/(TOC|NOTOC|FORCETOC|NOEDITSECTION|NEWSECTIONLINK|NONEWSECTIONLINK|NOGALLARY|HIDDENCAT|NOCONTENTCONVERT|NOCC|NOTITLECONVERT|NOTC|INDEX|NOINDEX|STATICREDIRECT)/', $text) || preg_match('/^.*?(\.jpeg|\.jpg|\.png|\.gif)/', $text)) # &#48120;&#46356;&#50612;&#50948;&#53412; &#53412;&#50892;&#46300; &#50500;&#45776; &#46412;&#47196; &#54869;&#51109;
                     return $type.$text.$type;
                 else
                     return '<u>'.$text.'</u>';
@@ -763,34 +776,35 @@ class NamuMark {
                 return '<sub>'.$text.'</sub>';
             case '<!--':
                 return '<!--'.$text.'-->';
-            case '{{|':
-                return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;">'.$text.'</poem>';
+            #case '{{|': &#47928;&#48277; &#47924;&#49884;
+             #   return '<poem style="border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;">'.$text.'</poem>';
             case '<nowiki>':
                 return '<nowiki>'.$text.'</nowiki>';
             case '{{{':
-                if(self::startsWith($text, '#!html')) {
-                    $html = substr($text, 6);
-                    $html = htmlspecialchars_decode($html);
-                    return '<html>'.$html.'</html>';
-                } elseif(self::startsWithi($text, '#!syntax') && preg_match('/#!syntax ([^\s]*)/', $text, $match)) {
+                if(self::startsWith($text, '#!html')) { #html &#54952;&#44284;&#47484; &#47924;&#49884;.
+                   # $html = substr($text, 6);
+                   # $html = htmlspecialchars_decode($html);
+                    return /*'<html>'.$html.'</html>'; */ $type.$text.$type;
+                } elseif(self::startsWithi($text, '#!syntax') && preg_match('/#!syntax ([^\s]*)/', $text, $match)) { # &#44396;&#47928; &#44053;&#51312; &#47928;&#48277;&#51008; &#50976;&#54952;
                     return '<syntaxhighlight lang="'.$match[1].'" line="1">'.preg_replace('/#!syntax ([^\s]*)/', '', $text).'</syntaxhighlight>';
-                } elseif(preg_match('/^#(?:([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})|([A-Za-z]+)) (.*)$/', $text, $color)) {
+                } elseif(preg_match('/^#(?:([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})|([A-Za-z]+)) (.*)$/', $text, $color)) { #&#49353;&#52832; &#47928;&#48277;&#51008; &#50976;&#54952;
                     if(empty($color[1]) && empty($color[2]))
                         return $text;
                     return '<span style="color: '.(empty($color[1])?$color[2]:'#'.$color[1]).'">'.$this->formatParser($color[3]).'</span>';
-                } elseif(preg_match('/^\+([1-5]) (.*)$/', $text, $size)) {
-                    for ($i=1; $i<=$size[1]; $i++){
-                        if(isset($big_before) && isset($big_after)) {
-                            $big_before .= '<big>';
-                            $big_after .= '</big>';
-                        } else {
-                            $big_before = '<big>';
-                            $big_after = '</big>';
-                        }
-                    }
-
-                    return $big_before.$this->formatParser($size[2]).$big_after;
-                } elseif(preg_match('/^\-([1-5]) (.*)$/', $text, $size)) {
+                } elseif(preg_match('/^\+([1-9]) (.*)$/', $text, $size)) { # &#44544;&#51088;&#53356;&#44592; &#53412;&#50864;&#45716; &#47928;&#48277;&#51008; &#50976;&#54952;, 9&#45800;&#44228;&#44620;&#51648;. 
+				    
+                        for ($i=1; $i<=$size[1]; $i++){
+                           if(isset($big_before) && isset($big_after)) { 
+                               $big_before .= '<big>';
+                               $big_after .= '</big>';
+                            } else {
+                               $big_before = '<big>';
+                               $big_after = '</big>';
+                            }
+                       }
+                        return $big_before.$this->formatParser($size[2]).$big_after;
+					
+                } elseif(preg_match('/^\-([1-5]) (.*)$/', $text, $size)) { #&#44544;&#51088;&#53356;&#44592; &#51460;&#51060;&#45716; &#47928;&#48277;&#51008; &#50976;&#54952;
                     for ($i=1; $i<=$size[1]; $i++){
                         if(isset($small_before) && isset($small_after)) {
                             $small_before .= '<small>';
@@ -803,8 +817,21 @@ class NamuMark {
 
                     return $small_before.$this->formatParser($size[2]).$small_after;
                 } else {
-                    return '<nowiki>' . $text . '</nowiki>';
+
+			return /*'<nowiki>' . $text . '</nowiki>'; */ $type.$text.'}}}'; #Ignore Nowiki 
                 }
+			case '((': #footnotes of dokuwiki
+			   if(self::startsWith($text, ' ') && !self::endsWith($text, 'UNIQ') && !preg_match('/^.*?-.*-QINU/', $text) ) {
+                  return '<ref>'.$text.'</ref>';
+               } else {
+
+				  return $type.$text.'))';
+			   } 	
+			case '$$': #&#49688;&#49885; &#54364;&#54788; $$&#47484; &#51060;&#50857;&#54644;&#49436; &#49688;&#49885; &#54364;&#54788;
+                if(!self::startsWith($text, ' ') && !self::startsWith($text, 'item-') && !self::endsWith($text, 'UNIQ') && !self::startsWith($text, 'QINU') && !preg_match('/^.*?-.*-QINU/', $text) && !self::startsWith($text, 'h-'))
+                    return '<math>'.$text.'</math>'; #
+                else
+                    return $type.$text.$type; 
             default:
                 return $type.$text.$type;
         }

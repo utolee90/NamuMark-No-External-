@@ -31,13 +31,14 @@ $wgExtensionCredits['parserhook'][] = array(
 $wgHooks['ParserBeforeStrip'][] = 'NamuMark';
 $wgHooks['InternalParseBeforeLinks'][] = 'NamuMarkHTML';
 $wgHooks['ParserBeforeTidy'][] = 'NamuMarkHTML2';
-$wgHooks['ParserAfterTidy'][] = 'NamuMarkExtraHTML';
+$wgHooks['ParserAfterTidy'][] = 'NamuMarkExtraHTML'; 
 
 require_once('php-namumark.php');
 require_once("NamuMarkExtra.php");
 require_once("php-namumark.class1.php");
 require_once("php-namumark.class2.php");
 require_once("php-namumark.class3.php");
+
 
 function NamuMark(&$parser, &$text, &$strip_state) {
 	$title = $parser->getTitle(); // 문서의 제목을 title로 변수화한다.
@@ -101,7 +102,7 @@ function NamuMark(&$parser, &$text, &$strip_state) {
 			}
 			$xss = new XssHtml($code_ex);
 			$text = str_replace($code, $xss->getHtml(), $text);
-		}
+		} 
 
 		$Extra = new NamuMarkExtra($text, $title);
 		$Extra->pasteMediawikiTable($mediawikiTable);
